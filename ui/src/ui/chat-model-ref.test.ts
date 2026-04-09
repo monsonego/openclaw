@@ -135,7 +135,6 @@ describe("chat-model-ref helpers", () => {
       ),
     ).toBe("Claude Sonnet · claude-3-7-sonnet-thinking · anthropic");
   });
-
   it("normalizes raw overrides when the catalog match is unique", () => {
     expect(normalizeChatModelOverrideValue(createChatModelOverride("gpt-5-mini"), catalog)).toBe(
       "openai/gpt-5-mini",
@@ -152,7 +151,7 @@ describe("chat-model-ref helpers", () => {
   });
 
   it("formats qualified model refs consistently for default labels", () => {
-    expect(formatChatModelDisplay("openai/gpt-5-mini")).toBe("gpt-5-mini · openai");
+    expect(formatChatModelDisplay("openai/gpt-5-mini")).toBe("gpt-5-mini \u00b7 openai");
     expect(formatChatModelDisplay("alias-only")).toBe("alias-only");
   });
 

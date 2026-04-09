@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { resolvePreferredServerChatModel } from "./chat-model-ref.ts";
+import { resolvePreferredServerChatModelValue } from "./chat-model-ref.ts";
 
 describe("chat-model-ref provider prefix handling", () => {
   it("qualifies slash-containing server values when the catalog confirms the provider-owned ref", () => {
@@ -11,11 +11,8 @@ describe("chat-model-ref provider prefix handling", () => {
       },
     ];
 
-    expect(
-      resolvePreferredServerChatModel("anthropic/claude-haiku-4.5", "openrouter", catalog),
-    ).toEqual({
-      value: "openrouter/anthropic/claude-haiku-4.5",
-      source: "catalog",
-    });
+    expect(resolvePreferredServerChatModelValue("anthropic/claude-haiku-4.5", "openrouter", catalog)).toBe(
+      "openrouter/anthropic/claude-haiku-4.5",
+    );
   });
 });

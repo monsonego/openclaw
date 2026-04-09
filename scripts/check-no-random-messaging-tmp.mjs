@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import ts from "typescript";
-import { bundledPluginFile } from "./lib/bundled-plugin-paths.mjs";
+import { bundledPluginCallsite } from "./lib/bundled-plugin-paths.mjs";
 import { runCallsiteGuard } from "./lib/callsite-guard.mjs";
 import {
   collectCallExpressionLines,
@@ -17,21 +17,23 @@ export const messagingTmpdirGuardSourceRoots = [
   "src/media-understanding",
   "extensions",
 ];
-const allowedRelativePaths = new Set([
-  bundledPluginFile("feishu", "src/dedup.ts"),
-  "src/infra/outbound/delivery-queue.test-helpers.ts",
-  "extensions/active-memory/index.ts",
-  "extensions/browser/src/browser/chrome-mcp.ts",
-  "extensions/diffs/src/test-helpers.ts",
-  "extensions/google/video-generation-provider.ts",
-  "extensions/memory-core/src/cli.runtime.ts",
-  "extensions/memory-core/src/test-helpers.ts",
-  "extensions/memory-wiki/src/test-helpers.ts",
-  "extensions/openshell/src/backend.ts",
-  "extensions/qa-lab/src/gateway-child.ts",
-  "extensions/qa-lab/src/model-catalog.runtime.ts",
-  "extensions/qqbot/src/utils/platform.ts",
-  "extensions/signal/src/install-signal-cli.ts",
+const allowedTmpdirCallsites = new Set([
+  bundledPluginCallsite("feishu", "src/dedup.ts", 29),
+  "src/infra/outbound/delivery-queue.test-helpers.ts:13",
+  "extensions/active-memory/index.ts:1213",
+  "extensions/browser/src/browser/chrome-mcp.ts:335",
+  "extensions/diffs/src/test-helpers.ts:10",
+  "extensions/google/video-generation-provider.ts:127",
+  "extensions/memory-core/src/cli.runtime.ts:161",
+  "extensions/memory-core/src/cli.runtime.ts:1723",
+  "extensions/memory-core/src/test-helpers.ts:11",
+  "extensions/memory-wiki/src/test-helpers.ts:40",
+  "extensions/openshell/src/backend.ts:515",
+  "extensions/qa-lab/src/gateway-child.ts:534",
+  "extensions/qa-lab/src/model-catalog.runtime.ts:63",
+  "extensions/qqbot/src/utils/platform.ts:56",
+  "extensions/qqbot/src/utils/platform.ts:88",
+  "extensions/signal/src/install-signal-cli.ts:250",
 ]);
 
 function collectOsTmpdirImports(sourceFile) {
@@ -90,7 +92,7 @@ export async function main() {
     importMetaUrl: import.meta.url,
     sourceRoots: messagingTmpdirGuardSourceRoots,
     findCallLines: findMessagingTmpdirCallLines,
-    skipRelativePath: (relativePath) => allowedRelativePaths.has(relativePath),
+    allowCallsite: (callsite) => allowedTmpdirCallsites.has(callsite),
     header: "Found os.tmpdir()/tmpdir() usage in messaging/channel runtime sources:",
     footer:
       "Use resolvePreferredOpenClawTmpDir() or plugin-sdk temp helpers instead of host tmp defaults.",

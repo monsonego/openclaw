@@ -62,8 +62,8 @@ const comparisonOperators = new Set([
 ]);
 
 const allowedViolations = new Set([
-  "acp-core:src/agents/acp-spawn.ts",
-  "acp-core:src\\agents\\acp-spawn.ts",
+  'acp-core src/agents/acp-spawn.ts:511: compares with channel id literal (channelKey === "line")',
+  'acp-core src/agents/acp-spawn.ts:517: compares with channel id literal (channelKey === "telegram")',
 ]);
 
 function isChannelsPropertyAccess(node) {
@@ -316,14 +316,21 @@ export async function main() {
     ).flat();
     for (const filePath of files) {
       const relativeFile = path.relative(repoRoot, filePath);
+      const relativeFilePosix = relativeFile.replaceAll("\\", "/");
       if (
         allowedViolations.has(`${ruleSet.id}:${relativeFile}`) ||
-        allowedViolations.has(relativeFile)
+        allowedViolations.has(`${ruleSet.id}:${relativeFilePosix}`) ||
+        allowedViolations.has(relativeFile) ||
+        allowedViolations.has(relativeFilePosix)
       ) {
         continue;
       }
       const content = await fs.readFile(filePath, "utf8");
       for (const violation of ruleSet.scan(content, relativeFile)) {
+        const violationKey = `${ruleSet.id} ${relativeFilePosix}:${violation.line}: ${violation.reason}`;
+        if (allowedViolations.has(violationKey)) {
+          continue;
+        }
         violations.push(`${ruleSet.id} ${relativeFile}:${violation.line}: ${violation.reason}`);
       }
     }

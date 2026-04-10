@@ -115,21 +115,18 @@ export function resolveConversationDeliveryTarget(params: {
         : undefined;
   const isThreadChild =
     conversationId && parentConversationId && parentConversationId !== conversationId;
-  if (
-    channel &&
-    isThreadChild &&
-    (channel === "matrix" ||
+  if (channel && isThreadChild) {
+    if (
+      channel === "matrix" ||
       channel === "slack" ||
       channel === "mattermost" ||
-      channel === "telegram")
-  ) {
-    return {
-      to: formatConversationTarget({
-        channel,
-        conversationId: parentConversationId,
-      }),
-      threadId: conversationId,
-    };
+      channel === "telegram"
+    ) {
+      return {
+        to: `channel:${parentConversationId}`,
+        threadId: conversationId,
+      };
+    }
   }
   const pluginTarget =
     channel && conversationId

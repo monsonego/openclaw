@@ -326,12 +326,12 @@ export async function main() {
         continue;
       }
       const content = await fs.readFile(filePath, "utf8");
-      for (const violation of ruleSet.scan(content, relativeFile)) {
+      for (const violation of ruleSet.scan(content, relativeFilePosix)) {
         const violationKey = `${ruleSet.id} ${relativeFilePosix}:${violation.line}: ${violation.reason}`;
         if (allowedViolations.has(violationKey)) {
           continue;
         }
-        violations.push(`${ruleSet.id} ${relativeFile}:${violation.line}: ${violation.reason}`);
+        violations.push(`${ruleSet.id} ${relativeFilePosix}:${violation.line}: ${violation.reason}`);
       }
     }
   }
